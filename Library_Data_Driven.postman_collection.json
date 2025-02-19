@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "06f3e896-ba90-407e-bb1a-a90b75e9dba0",
+		"name": "Library_Data_Driven",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32434907"
+	},
+	"item": [
+		{
+			"name": "AddBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const JsonObject = pm.response.json();\r",
+							"// when u call json method u will get Json object\r",
+							"\r",
+							"\r",
+							"// brief:below 2 line code\r",
+							"//we parse the resp to grab the \"ID\" value &store in BookId\r",
+							"// then we set that property value in env variable as book_id\r",
+							"//in GetBook & DeleteBook req we just call that env var book_id\r",
+							"\r",
+							"const BookId = JsonObject.ID;\r",
+							"pm.environment.set(\"book_id\",BookId);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.globals.get(\"companyCode\"));\r",
+							"// we can see \"RS\" in console before request execution\r",
+							"const code = pm.globals.get(\"companyCode\");\r",
+							"//get global declared variable\"RS\" & store in local variable'Code'\r",
+							"const val = pm.variables.replaceIn('{{$randomInt}}');\r",
+							"// dynamically generated int value store in local variable 'val'\r",
+							"\r",
+							"pm.collectionVariables.set(\"isbn\",code + val);\r",
+							"// isbn value is store/set in collection varaible\r",
+							"\r",
+							"//pm.collectionVariables.set(\"book_name\",\"postman\");\r",
+							"pm.collectionVariables.set(\"book_name\",pm.iterationData.get(\"BookName\"));\r",
+							"\r",
+							"//pm.collectionVariables.set(\"author_name\",\"akshay\");\r",
+							"pm.collectionVariables.set(\"author_name\",pm.iterationData.get(\"AuthorName\"));\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\"name\":\"{{book_name}}\",\r\n\"isbn\":\"{{isbn}}\",\r\n\"aisle\":\"123\",\r\n\"author\":\"{{author_name}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Library/Addbook.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Library",
+						"Addbook.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const bookResponse = pm.response.json();\r",
+							"//above line: parse the response & create json object 'bookResponse'\r",
+							"\r",
+							"pm.test(\"verify json response 'book name' as per input\"), function () \r",
+							"{\r",
+							"    pm.expect(bookResponse[0].book_name).to.eql(pm.collectionVariables.get(\"book_name\"));\r",
+							"};\r",
+							"\r",
+							"pm.test(\"verify json response 'isbn' as per input\"), function () \r",
+							"{\r",
+							"    pm.expect(bookResponse[0].isbn).to.eql(pm.collectionVariables.get(\"isbn\"));\r",
+							"};\r",
+							"\r",
+							"pm.test(\"verify json response 'aisle' as per input\"),function()\r",
+							"{\r",
+							"    pm.expect(bookResponse[0].aisle).to.eql(pm.collectionVariables(\"aisle\",\"aisle_code\"));\r",
+							"}\r",
+							"\r",
+							"\r",
+							"pm.test(\"verify json response 'author' as per input\"), function () {\r",
+							"    pm.expect(bookResponse[0].author).to.eql(pm.collectionVariables.get(\"author_name\"));\r",
+							"};\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/Library/GetBook.php?ID={{book_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Library",
+						"GetBook.php"
+					],
+					"query": [
+						{
+							"key": "ID",
+							"value": "{{book_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const ResponseBody = pm.response.json();\r",
+							"console.log(ResponseBody);\r",
+							"\r",
+							"pm.test(\"verify json response\", function () \r",
+							"{\r",
+							"pm.expect(ResponseBody.msg).to.eql(\"book is successfully deleted\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \r\n\"ID\" : \"{{book_id}}\"\r\n \r\n} \r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Library/DeleteBook.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Library",
+						"DeleteBook.php"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "isbn",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "book_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "author_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

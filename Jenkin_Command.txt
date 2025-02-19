@@ -1,0 +1,14 @@
+
+C:\Users\Admin\AppData\Roaming\npm\newman run "%WORKSPACE%\Library_Data_Driven.postman_collection.json" -d "%WORKSPACE%\booksData.csv.csv" -e "%WORKSPACE%\UAT.postman_environment.json" -g "%WORKSPACE%\workspace.postman_globals.json"
+
+*********************************************************************************************
+==> IF WE RUN WITH "htmlextra" reporter 
+
+C:\Users\Admin\AppData\Roaming\npm\newman run "%WORKSPACE%\Library_Data_Driven.postman_collection.json" -d "%WORKSPACE%\booksData.csv.csv" -e "%WORKSPACE%\UAT.postman_environment.json" -g "%WORKSPACE%\workspace.postman_globals.json" -r htmlextra
+
+==> HTML Report Saved in 
+C:\Users\Admin\AppData\Local\Jenkins\.jenkins\workspace\Library_DataDriven-Testing\newman =>jenkin build name
+
+************************************************************************************************************************
+
+C:\Users\Admin\AppData\Roaming\npm\newman run "%WORKSPACE%\Library_Automation.postman_collection.json" -e "%WORKSPACE%\UAT.postman_environment.json" -g "%WORKSPACE%\workspace.postman_globals.json"
